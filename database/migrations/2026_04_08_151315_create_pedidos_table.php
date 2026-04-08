@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('pedidos', function (Blueprint $table) {
             $table->id();
             $table->string('cliente');
-            $table->string('produto');
+            $table->string('producto');
             $table->integer('cantidad');
             $table->decimal('precio', 8, 2);
             $table->enum('estado', ['pendiente', 'en_proceso', 'completado'])->default('pendiente');
