@@ -33,7 +33,7 @@ class PedidoController extends Controller
 
     public function update(Request $request, Pedido $pedido)
     {
-        $data = $request->validate($this->rules());
+        $data = $request->validate($this->updateRules());
         $pedido->update($data);
         return $pedido;
     }
@@ -55,6 +55,17 @@ class PedidoController extends Controller
             'cantidad' => 'required|integer|min:1',
             'precio' => 'required|numeric|min:0',
             'estado' => 'sometimes|in:pendiente,en_proceso,completado',
+        ];
+    }
+
+    protected function updateRules(): array
+    {
+        return [
+            'cliente' => 'sometimes|required|string|max:255',
+            'producto' => 'sometimes|required|string|max:255',
+            'cantidad' => 'sometimes|required|integer|min:1',
+            'precio' => 'sometimes|required|numeric|min:0',
+            'estado' => 'sometimes|required|in:pendiente,en_proceso,completado',
         ];
     }
 }
