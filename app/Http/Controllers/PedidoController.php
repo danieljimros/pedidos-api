@@ -6,26 +6,45 @@ use App\Http\Responses\ApiResponse;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 
+// Controlador para manejar las operaciones CRUD de Pedidos
 class PedidoController extends Controller
 {
-    public function index()
+    // Listar todos los pedidos con paginación
+    public function index(Request $request)
     {
-        return ApiResponse::success('Listado de pedidos', Pedido::all());
+        // Validar el parámetro de paginación opcional
+        $validated = $request->validate([
+            'per_page' => 'sometimes|integer|min:1|max:100',
+        ]);
+
+        // Obtener el número de elementos por página, con un valor predeterminado de 10
+        $perPage = (int) ($validated['per_page'] ?? 10);
+
+        // Obtener los pedidos ordenados por el más reciente y paginados
+        $pedidos = Pedido::latest('id')
+            ->paginate($perPage)
+            ->appends($request->query());
+
+        return ApiResponse::success('Listado de pedidos', $pedidos);
     }
 
+    // Crear un nuevo pedido
     public function store(Request $request)
     {
         $data = $request->validate($this->rules());
+
         $pedido = Pedido::create($data);
 
         return ApiResponse::success('Pedido creado exitosamente', $pedido, 201);
     }
 
+    // Mostrar los detalles de un pedido específico
     public function show(Pedido $pedido)
     {
         return ApiResponse::success('Detalle del pedido', $pedido);
     }
 
+    // Actualizar un pedido existente
     public function update(Request $request, Pedido $pedido)
     {
         $data = $request->validate($this->updateRules());
@@ -34,6 +53,7 @@ class PedidoController extends Controller
         return ApiResponse::success('Pedido actualizado exitosamente', $pedido);
     }
 
+    // Eliminar un pedido
     public function destroy(Pedido $pedido)
     {
         $pedido->delete();
@@ -41,6 +61,7 @@ class PedidoController extends Controller
         return ApiResponse::success('Pedido eliminado exitosamente');
     }
 
+    // Reglas de validación para crear un pedido
     protected function rules(): array
     {
         return [
@@ -52,6 +73,7 @@ class PedidoController extends Controller
         ];
     }
 
+    // Reglas de validación para actualizar un pedido (permitiendo campos opcionales)
     protected function updateRules(): array
     {
         return [
