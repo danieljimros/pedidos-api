@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Responses\ApiResponse;
 use App\Models\Pedido;
 use Illuminate\Http\Request;
 
@@ -9,10 +10,7 @@ class PedidoController extends Controller
 {
     public function index()
     {
-        return response()->json([
-            'message' => 'Listado de pedidos',
-            'data' => Pedido::all()
-        ]);
+        return ApiResponse::success('Listado de pedidos', Pedido::all());
     }
 
     public function store(Request $request)
@@ -20,31 +18,27 @@ class PedidoController extends Controller
         $data = $request->validate($this->rules());
         $pedido = Pedido::create($data);
 
-        return response()->json([
-            'message' => 'Pedido creado exitosamente',
-            'data' => $pedido
-        ], 201);
+        return ApiResponse::success('Pedido creado exitosamente', $pedido, 201);
     }
 
     public function show(Pedido $pedido)
     {
-        return $pedido;
+        return ApiResponse::success('Detalle del pedido', $pedido);
     }
 
     public function update(Request $request, Pedido $pedido)
     {
         $data = $request->validate($this->updateRules());
         $pedido->update($data);
-        return $pedido;
+
+        return ApiResponse::success('Pedido actualizado exitosamente', $pedido);
     }
 
     public function destroy(Pedido $pedido)
     {
         $pedido->delete();
 
-        return response()->json([
-            'message' => 'Pedido eliminado exitosamente'
-        ], 200);
+        return ApiResponse::success('Pedido eliminado exitosamente');
     }
 
     protected function rules(): array
