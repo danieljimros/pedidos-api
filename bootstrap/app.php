@@ -12,13 +12,16 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
+// Este archivo es el punto de entrada para configurar y crear la aplicación Laravel.
 return Application::configure(basePath: dirname(__DIR__))
+    // Configuramos las rutas para la aplicación, incluyendo rutas web, API, comandos y una ruta de salud.
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
+    // Configuramos los middleware globales para la aplicación, incluyendo CORS, manejo de cookies y middleware específicos para web y API.
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
 
@@ -32,6 +35,7 @@ return Application::configure(basePath: dirname(__DIR__))
             AddLinkHeadersForPreloadedAssets::class,
         ]);
     })
+    // Configuramos el manejo de excepciones para la aplicación, personalizando las respuestas JSON para errores comunes como validación, recursos no encontrados y métodos no permitidos.
     ->withExceptions(function (Exceptions $exceptions): void {
         $shouldRenderJson = static fn (Request $request): bool =>
             $request->expectsJson() || $request->is('api/*');
