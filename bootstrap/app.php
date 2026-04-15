@@ -24,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
     // Configuramos los middleware globales para la aplicación, incluyendo CORS, manejo de cookies y middleware específicos para web y API.
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->encryptCookies(except: ['appearance', 'sidebar_state']);
+        $middleware->statefulApi();
 
         $middleware->api(prepend: [
             \Illuminate\Http\Middleware\HandleCors::class,
