@@ -1,7 +1,8 @@
 <?php
-
+// database/factories/PedidoFactory.php
 namespace Database\Factories;
 
+// Importamos el modelo Pedido para asociarlo con esta fábrica
 use App\Models\Pedido;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
